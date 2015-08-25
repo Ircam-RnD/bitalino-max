@@ -2,7 +2,7 @@
 
 **bitalino** [Max](https://cycling74.com/products/max/) object for communication with the [BITalino](www.bitalino.com) BlueTooth device.   
 Based on the BITalino cpp API by PLUX - Wireless Biosignals, S.A.   
-The files bitalino.h and bitalino.cpp have been added here for convenience, the original ones can be found [here](https://github.com/BITalinoWorld/cpp-api).   
+The files bitalino.h and bitalino.cpp have been added here for convenience, the original ones can be found [there](https://github.com/BITalinoWorld/cpp-api).   
 This object should be compiled with Max SDK version 6 or greater.   
 Clone the repository in any subfolder of Max SDK examples folder and compile with XCode.
 
