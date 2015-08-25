@@ -11,7 +11,7 @@
 		22CF116E0EE9A7700054F513 /* MaxAudioAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CF116D0EE9A7700054F513 /* MaxAudioAPI.framework */; };
 		7C0C8F231B7A5C8D005E93BF /* bitalino.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C8F211B7A5C8D005E93BF /* bitalino.cpp */; };
 		7C0C8F241B7A5C8D005E93BF /* bitalino.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C0C8F221B7A5C8D005E93BF /* bitalino.h */; };
-		7C0C8F271B7A60CF005E93BF /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C8F261B7A60CF005E93BF /* main.cpp */; };
+		7C0C8F271B7A60CF005E93BF /* bitalino-max.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C8F261B7A60CF005E93BF /* bitalino-max.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,7 +21,7 @@
 		2FBBEAE508F335360078DB84 /* bitalino.mxo */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bitalino.mxo; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C0C8F211B7A5C8D005E93BF /* bitalino.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitalino.cpp; sourceTree = "<group>"; };
 		7C0C8F221B7A5C8D005E93BF /* bitalino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitalino.h; sourceTree = "<group>"; };
-		7C0C8F261B7A60CF005E93BF /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		7C0C8F261B7A60CF005E93BF /* bitalino-max.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "bitalino-max.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,7 +39,7 @@
 		089C166AFE841209C02AAC07 /* iterator */ = {
 			isa = PBXGroup;
 			children = (
-				7C0C8F261B7A60CF005E93BF /* main.cpp */,
+				7C0C8F261B7A60CF005E93BF /* bitalino-max.cpp */,
 				7C0C8F211B7A5C8D005E93BF /* bitalino.cpp */,
 				7C0C8F221B7A5C8D005E93BF /* bitalino.h */,
 				22CF10220EE984600054F513 /* maxmspsdk.xcconfig */,
@@ -142,7 +142,7 @@
 			files = (
 				7C0C8F231B7A5C8D005E93BF /* bitalino.cpp in Sources */,
 				22922AD30F38D67900B1EFEA /* commonsyms.c in Sources */,
-				7C0C8F271B7A60CF005E93BF /* main.cpp in Sources */,
+				7C0C8F271B7A60CF005E93BF /* bitalino-max.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
