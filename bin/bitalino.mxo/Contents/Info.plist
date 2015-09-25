@@ -11,32 +11,32 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.cycling74.bitalino</string>
 	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.1.1</string>
+	<string>7.0.1</string>
 	<key>CFBundleLongVersionString</key>
-	<string>bitalino 6.1.0, Copyright 2013 Cycling '74</string>
+	<string>bitalino 7.0.1, Copyright 2014 Cycling '74</string>
 	<key>CFBundlePackageType</key>
 	<string>iLaX</string>
 	<key>CFBundleShortVersionString</key>
-	<string>6.1.0</string>
+	<string>7.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>max2</string>
 	<key>CFBundleVersion</key>
-	<string>6.1.0</string>
+	<string>7.0.1</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
-	<string>6E35b</string>
+	<string>6C131e</string>
 	<key>DTPlatformVersion</key>
 	<string>GM</string>
 	<key>DTSDKBuild</key>
-	<string>14D125</string>
+	<string>14A383</string>
 	<key>DTSDKName</key>
 	<string>macosx10.10</string>
 	<key>DTXcode</key>
-	<string>0640</string>
+	<string>0620</string>
 	<key>DTXcodeBuild</key>
-	<string>6E35b</string>
+	<string>6C131e</string>
 </dict>
 </plist>
