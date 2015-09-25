@@ -1,0 +1,7 @@
+;bitalino.def
+
+LIBRARY bitalino.mxe
+EXPORTS
+
+	main
+
