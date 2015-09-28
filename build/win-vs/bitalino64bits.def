@@ -1,0 +1,7 @@
+;bitalino64bits.def
+
+LIBRARY bitalino.mxe64
+EXPORTS
+
+	main
+
