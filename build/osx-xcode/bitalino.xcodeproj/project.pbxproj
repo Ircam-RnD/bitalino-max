@@ -72,6 +72,7 @@
 				2FBBEADA08F335360078DB84 /* Sources */,
 				2FBBEADC08F335360078DB84 /* Frameworks */,
 				2FBBEADF08F335360078DB84 /* Rez */,
+				3BEFE6A51BB9A1C0002A9AD5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -126,6 +127,22 @@
 		};
 /* End PBXRezBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3BEFE6A51BB9A1C0002A9AD5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ext=${WRAPPER_EXTENSION:-mxo}\ndefault_prod=$PRODUCT_NAME.$WRAPPER_EXTENSION\ndefault_dir=$EXTERNALS_DIR\n\nprod=${1:-$default_prod}\ndir=${2:-$default_dir}\next=${WRAPPER_EXTENSION:-mxo}\nbase=`echo $prod | sed \"s|\\.$ext||\"`\n\n# mxo bundle \nproddir=\"$BUILT_PRODUCTS_DIR/$prod\"\ninstalldir=\"$dir/$prod\"\n\n# set bundle bit for mxo's (on some installations, they show up as directories)\nSetFile -a B \"$proddir\"\n\n# remove target for clean install with current date and flags for directories\necho \"[removing  $installdir]\"\nrm -fr \"$installdir\"\n\n# copy to install dir with all attributes and resources\necho \"[installing $prod as $installdir]\"\nditto --rsrc \"$proddir\" \"$installdir\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2FBBEADA08F335360078DB84 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -142,6 +159,7 @@
 		2FBBEAD008F335010078DB84 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				HEADER_SEARCH_PATHS = "";
 				MAXAPI_DIR = "";
 			};
@@ -150,6 +168,7 @@
 		2FBBEAD108F335010078DB84 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				HEADER_SEARCH_PATHS = "";
 				MAXAPI_DIR = "";
 			};
@@ -160,6 +179,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				EXTERNALS_DIR = ../../bin;
 				FRAMEWORK_SEARCH_PATHS = "$(MAXAPI_DIR)/**";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "${MAXAPI_DIR}/max-includes/macho-prefix.pch";
@@ -174,6 +194,7 @@
 					"-Wl,-U,_object_method_imp",
 				);
 				PRODUCT_NAME = bitalino;
+				WRAPPER_EXTENSION = mxo;
 			};
 			name = Development;
 		};
@@ -182,6 +203,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
+				EXTERNALS_DIR = ../../bin;
 				FRAMEWORK_SEARCH_PATHS = "$(MAXAPI_DIR)/**";
 				GCC_PREFIX_HEADER = "${MAXAPI_DIR}/max-includes/macho-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "MAX611=1";
@@ -195,6 +217,7 @@
 					"-Wl,-U,_object_method_imp",
 				);
 				PRODUCT_NAME = bitalino;
+				WRAPPER_EXTENSION = mxo;
 			};
 			name = Deployment;
 		};
