@@ -5,14 +5,16 @@ This object has been developed by the ISMM team at IRCAM, within the context of 
 It is based on the BITalino cpp API by PLUX - Wireless Biosignals, S.A.   
 The files bitalino.h and bitalino.cpp have been added here for convenience, the original ones can be found [there](https://github.com/BITalinoWorld/cpp-api).   
 This object should be compiled with Max SDK version 6 or greater.   
-Clone the repository in any subfolder of Max SDK examples folder and compile with XCode.
 
 ## messages to inlet
 
-- start : starts a thread that will connect to BITalino through the API. only 1 instance of the object is allowed to connect to BITalino at the same time
-- stop : stops the thread and releases connection with BITalino
-- poll <ms_poll_interval> : starts polling frames
-- nopoll : stops polling frames but keeps connection with BITalino alive
+- connect : starts a thread that will connect to BITalino through the API. only 1 instance of the object is allowed to connect to BITalino at the same time
+- disconnect : stops the thread and releases connection with BITalino
+
+## attributes
+
+- continuous : if set to 0 (default value), all incoming frames from bluetooth are output immediately after they have been received. if set to 1, enables an internal clock reconstructing the signal at a constant rate determined by the interval attribute.
+- interval : (default value 2) determines the interval in milliseconds between 2 consecutive frames when continuous mode is on
 
 ## messages from outlet
 
