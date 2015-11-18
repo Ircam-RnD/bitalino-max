@@ -13,7 +13,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2FBBEAE508F335360078DB84 /* bitalino.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bitalino.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		2FBBEAE508F335360078DB84 /* bitalino.mxo */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bitalino.mxo; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C0C8F211B7A5C8D005E93BF /* bitalino.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bitalino.cpp; path = ../../src/bitalino.cpp; sourceTree = "<group>"; };
 		7C0C8F221B7A5C8D005E93BF /* bitalino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitalino.h; path = ../../src/bitalino.h; sourceTree = "<group>"; };
 		7C0C8F261B7A60CF005E93BF /* bitalino-max.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "bitalino-max.cpp"; path = "../../src/bitalino-max.cpp"; sourceTree = "<group>"; };
@@ -44,7 +44,7 @@
 		19C28FB4FE9D528D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2FBBEAE508F335360078DB84 /* bitalino.bundle */,
+				2FBBEAE508F335360078DB84 /* bitalino.mxo */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -80,7 +80,7 @@
 			);
 			name = "bitalino-max";
 			productName = iterator;
-			productReference = 2FBBEAE508F335360078DB84 /* bitalino.bundle */;
+			productReference = 2FBBEAE508F335360078DB84 /* bitalino.mxo */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -160,8 +160,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				EXTERNALS_DIR = ../../bin;
 				HEADER_SEARCH_PATHS = "";
-				MAXAPI_DIR = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MAXAPI_DIR = ../../../c74support;
 			};
 			name = Development;
 		};
@@ -169,8 +171,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				EXTERNALS_DIR = ../../bin;
 				HEADER_SEARCH_PATHS = "";
-				MAXAPI_DIR = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MAXAPI_DIR = ../../../c74support;
 			};
 			name = Deployment;
 		};
@@ -179,13 +183,11 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				EXTERNALS_DIR = ../../bin;
 				FRAMEWORK_SEARCH_PATHS = "$(MAXAPI_DIR)/**";
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "${MAXAPI_DIR}/max-includes/macho-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "MAX611=1";
 				HEADER_SEARCH_PATHS = "$(MAXAPI_DIR)/**";
-				MAXAPI_DIR = ../../../c74support;
 				OTHER_LDFLAGS = (
 					"-framework",
 					MaxAPI,
@@ -203,12 +205,10 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
-				EXTERNALS_DIR = ../../bin;
 				FRAMEWORK_SEARCH_PATHS = "$(MAXAPI_DIR)/**";
 				GCC_PREFIX_HEADER = "${MAXAPI_DIR}/max-includes/macho-prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = "MAX611=1";
 				HEADER_SEARCH_PATHS = "$(MAXAPI_DIR)/**";
-				MAXAPI_DIR = ../../../c74support;
 				OTHER_LDFLAGS = (
 					"-framework",
 					MaxAPI,
