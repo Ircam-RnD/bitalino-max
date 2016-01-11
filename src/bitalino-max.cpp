@@ -2,6 +2,7 @@
  *
  * @file bitalino-max.cpp
  * @author joseph.larralde@ircam.fr
+ * @author Riccardo.Borghesi@ircam.fr
  *
  * @brief max interface object for the BITalino API
  *
