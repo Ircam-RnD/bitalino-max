@@ -194,8 +194,23 @@ void *bitalino_get(t_bitalino *x)
                 bitalinoaddress = devs[i].macAddr;
         BITalino dev(bitalinoaddress.c_str());
 #else
-        BITalino dev("/dev/tty.bitalino-DevB");
-#endif
+
+        bool revolution = false;
+        const char *portName = "/dev/tty.bitalino-DevB";
+        
+        try
+        {
+            BITalino dev(portName);
+        }
+        catch(BITalino::Exception &e)
+        {
+            portName = "/dev/tty.BITalino-DevB";
+            revolution = true;
+        }
+        
+        BITalino dev(portName);
+
+#endif //WIN32
 
         //BITalino dev("/dev/tty.bitalino-DevB");
         
@@ -214,8 +229,11 @@ void *bitalino_get(t_bitalino *x)
         BITalino::Vbool outputs;
         outputs.push_back(false);
         outputs.push_back(false);
-        outputs.push_back(true);
-        outputs.push_back(false);
+        if(!revolution)
+        {
+            outputs.push_back(true);
+            outputs.push_back(false);
+        }
         
         dev.start(1000, chans);
         dev.trigger(outputs);
