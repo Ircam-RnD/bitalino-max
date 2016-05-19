@@ -1,1 +1,3 @@
-.DS_Store
+**/.DS_Store
+
+build/osx-xcode/bitalino.xcodeproj/**/xcuserdata/**
