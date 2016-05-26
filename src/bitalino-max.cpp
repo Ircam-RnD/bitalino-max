@@ -120,12 +120,12 @@ void *bitalino_new()
     t_bitalino *x;
     
     x = (t_bitalino *)object_alloc(bitalino_class);
-    x->messages_out[0] = "/EMG";
-    x->messages_out[1] = "/EDA";
-    x->messages_out[2] = "/ECG";
-    x->messages_out[3] = "/ACCEL";
-    x->messages_out[4] = "/LUX";
-    x->messages_out[5] = "/OTHER";
+    x->messages_out[0] = "/A1";
+    x->messages_out[1] = "/A2";
+    x->messages_out[2] = "/A3";
+    x->messages_out[3] = "/A4";
+    x->messages_out[4] = "/A5";
+    x->messages_out[5] = "/A6";
     
     x->p_outlet = outlet_new(x, NULL);
     
