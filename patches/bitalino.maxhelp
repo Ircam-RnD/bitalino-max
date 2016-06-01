@@ -3,13 +3,13 @@
 		"fileversion" : 1,
 		"appversion" : 		{
 			"major" : 7,
-			"minor" : 1,
+			"minor" : 2,
 			"revision" : 0,
 			"architecture" : "x86",
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 269.0, 186.0, 770.0, 551.0 ],
+		"rect" : [ 130.0, 188.0, 770.0, 551.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -48,7 +48,7 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 1,
+							"minor" : 2,
 							"revision" : 0,
 							"architecture" : "x86",
 							"modernui" : 1
@@ -130,7 +130,7 @@
 										"fileversion" : 1,
 										"appversion" : 										{
 											"major" : 7,
-											"minor" : 1,
+											"minor" : 2,
 											"revision" : 0,
 											"architecture" : "x86",
 											"modernui" : 1
@@ -391,12 +391,12 @@
 								"box" : 								{
 									"id" : "obj-15",
 									"maxclass" : "newobj",
-									"numinlets" : 4,
-									"numoutlets" : 4,
-									"outlettype" : [ "", "", "", "" ],
+									"numinlets" : 2,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 94.0, 147.0, 151.0, 22.0 ],
 									"style" : "",
-									"text" : "route /ACCEL /EMG /ECG"
+									"text" : "route /A4"
 								}
 
 							}
@@ -735,13 +735,13 @@
 						"fileversion" : 1,
 						"appversion" : 						{
 							"major" : 7,
-							"minor" : 1,
+							"minor" : 2,
 							"revision" : 0,
 							"architecture" : "x86",
 							"modernui" : 1
 						}
 ,
-						"rect" : [ 269.0, 212.0, 770.0, 525.0 ],
+						"rect" : [ 130.0, 214.0, 770.0, 525.0 ],
 						"bglocked" : 1,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -941,7 +941,7 @@
 									"outlettype" : [ "", "", "", "", "", "", "" ],
 									"patching_rect" : [ 100.5, 329.0, 349.0, 22.0 ],
 									"style" : "",
-									"text" : "route /EMG /EDA /ECG /ACCEL /LUX /OTHER"
+									"text" : "route /A1 /A2 /A3 /A4 /A5 /A6"
 								}
 
 							}
