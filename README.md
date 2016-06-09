@@ -22,5 +22,5 @@ come in OSC-flavour, corresponding to each analog sensor channel of BITalino : /
 
 ## notes
 
-now works with all versions of BITalino boards.   
+should now work with all versions of BITalino boards.   
 only Mac version is stable for the moment, windows version is still a work in progress.
