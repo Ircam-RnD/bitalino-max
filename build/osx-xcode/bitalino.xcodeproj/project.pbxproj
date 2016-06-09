@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		318530DD1C21E6150042B19E /* bitalino.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C0C8F221B7A5C8D005E93BF /* bitalino.h */; };
-		318530E01C21E6150042B19E /* bitalino.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0C8F211B7A5C8D005E93BF /* bitalino.cpp */; };
 		318530E11C21E6150042B19E /* bitalino-max.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 318530D91C21E3250042B19E /* bitalino-max.cpp */; };
+		31E0808C1D0A1DA100885445 /* bitalino.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 31E0808A1D0A1DA100885445 /* bitalino.cpp */; };
+		31E0808D1D0A1DA100885445 /* bitalino.h in Headers */ = {isa = PBXBuildFile; fileRef = 31E0808B1D0A1DA100885445 /* bitalino.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		318530D91C21E3250042B19E /* bitalino-max.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "bitalino-max.cpp"; path = "../../src/bitalino-max.cpp"; sourceTree = "<group>"; };
 		318530E91C21E6150042B19E /* bitalino.mxo */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bitalino.mxo; sourceTree = BUILT_PRODUCTS_DIR; };
-		7C0C8F211B7A5C8D005E93BF /* bitalino.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bitalino.cpp; path = ../../src/bitalino.cpp; sourceTree = "<group>"; };
-		7C0C8F221B7A5C8D005E93BF /* bitalino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitalino.h; path = ../../src/bitalino.h; sourceTree = "<group>"; };
+		31E0808A1D0A1DA100885445 /* bitalino.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bitalino.cpp; path = "../../src/cpp-api/bitalino.cpp"; sourceTree = "<group>"; };
+		31E0808B1D0A1DA100885445 /* bitalino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitalino.h; path = "../../src/cpp-api/bitalino.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,8 +34,8 @@
 			isa = PBXGroup;
 			children = (
 				318530D91C21E3250042B19E /* bitalino-max.cpp */,
-				7C0C8F211B7A5C8D005E93BF /* bitalino.cpp */,
-				7C0C8F221B7A5C8D005E93BF /* bitalino.h */,
+				31E0808A1D0A1DA100885445 /* bitalino.cpp */,
+				31E0808B1D0A1DA100885445 /* bitalino.h */,
 				19C28FB4FE9D528D11CA2CBB /* Products */,
 			);
 			name = iterator;
@@ -56,7 +56,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				318530DD1C21E6150042B19E /* bitalino.h in Headers */,
+				31E0808D1D0A1DA100885445 /* bitalino.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,8 +148,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				318530E01C21E6150042B19E /* bitalino.cpp in Sources */,
 				318530E11C21E6150042B19E /* bitalino-max.cpp in Sources */,
+				31E0808C1D0A1DA100885445 /* bitalino.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
