@@ -30,6 +30,7 @@
 #endif
 #include <stdio.h>
 #include <queue>
+#include <map>
 
 #define BIT_NFRAMES 20
 #define BIT_MAXFRAMES 120
@@ -40,6 +41,8 @@
 // Global var prevents other objects to interfere with device currently in use.
 // First object to start connects to BITalino and has the exclusive connection until
 bool bitalino_busy;
+// Same as old boolean flag but now that several simultaneous connections are possible
+std::map<std::string, bool> busy_bitalinos;
 
 typedef struct _bitalino {
   t_object p_ob;
@@ -65,6 +68,8 @@ typedef struct _bitalino {
   void                *m_poll;
   double              poll_interval;
   void                *p_outlet;
+  
+  std::string         identifier;       // will be "v1" if old bitalino
 } t_bitalino;
 
 
