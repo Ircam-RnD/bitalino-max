@@ -39,7 +39,7 @@
 
 // Global var prevents other objects to interfere with device currently in use.
 // First object to start connects to BITalino and has the exclusive connection until
-bool  bitalino_busy;
+bool bitalino_busy;
 
 typedef struct _bitalino {
   t_object p_ob;
