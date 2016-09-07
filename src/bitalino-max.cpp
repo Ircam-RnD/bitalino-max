@@ -85,14 +85,19 @@ typedef struct _bitalino {
   std::string         bitalino_id;  // can be "ab-cd" (with numbers) or "anonymous"
 } t_bitalino;
 
-void bitalino_anything(t_bitalino *x, t_symbol *s, long argc, t_atom *argv);
-//void bitalino_state(t_bitalino *x);
+void bitalino_getstate(t_bitalino *x);
+void bitalino_battery(t_bitalino *x, long n);
+void bitalino_pwm(t_bitalino *x, long n);
+void bitalino_trigger(t_bitalino *x, t_symbol *s, long argc, t_atom *argv);
+//void bitalino_anything(t_bitalino *x, t_symbol *s, long argc, t_atom *argv);
+
+void bitalino_connect(t_bitalino *x, t_symbol *s, long argc, t_atom *argv);
+void bitalino_disconnect(t_bitalino *x);
+
 void bitalino_bang(t_bitalino *x);
 void *bitalino_get(t_bitalino *x);  // threaded function
 void bitalino_qfn(t_bitalino *x);   // function writing frames to thread-safe local frames
 void bitalino_clock(t_bitalino *x);
-void bitalino_connect(t_bitalino *x, t_symbol *s, long argc, t_atom *argv);
-void bitalino_disconnect(t_bitalino *x);
 void bitalino_start(t_bitalino *x, t_symbol *s, long argc, t_atom *argv);
 void bitalino_stop(t_bitalino *x);
 void bitalino_poll(t_bitalino *x);
@@ -121,8 +126,11 @@ int C74_EXPORT main(void)
   // (optional) assistance method needs to be declared like this
   class_addmethod(c, (method)bitalino_assist,     "assist",     A_CANT,   0);
   class_addmethod(c, (method)bitalino_disconnect, "disconnect",           0);
-  //class_addmethod(c, (method)bitalino_state,      "state",                0);
-  class_addmethod(c, (method)bitalino_anything,   "anything",   A_GIMME,  0);
+  class_addmethod(c, (method)bitalino_getstate,   "getstate",             0);
+  class_addmethod(c, (method)bitalino_battery,    "battery",    A_LONG,   0);
+  class_addmethod(c, (method)bitalino_pwm,        "pwm",        A_LONG,   0);
+  class_addmethod(c, (method)bitalino_trigger,    "trigger",    A_GIMME,  0);
+  //class_addmethod(c, (method)bitalino_anything,   "anything",   A_GIMME,  0);
   
   CLASS_ATTR_CHAR       (c, "automatic",    0, t_bitalino, automatic);
   CLASS_ATTR_STYLE_LABEL(c, "automatic",    0, "onoff",
@@ -213,7 +221,7 @@ void bitalino_free(t_bitalino *x)
   delete(x->frame_buffer);
 }
 
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void bitalino_assist(t_bitalino *x, void *b, long m, long a, char *s)
 {
@@ -222,92 +230,91 @@ void bitalino_assist(t_bitalino *x, void *b, long m, long a, char *s)
   } else {
     switch (a) {
       case 0:
-        sprintf(s,"connect [mac-suffix], disconnect, getstate, setbatterythreshold [0;63], setpwm [0;255] digiout <0/1 0/1>");
+        sprintf(s,"connect [mac-suffix], disconnect, getstate, battery [0;63], \
+                   pwm [0;255], trigger <0/1 0/1 [0/1 0/1]>");
         break;
     }
   }
 }
 
-void bitalino_anything(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
-{
+//------------------------------------------------------------------------------
+
+void bitalino_getstate(t_bitalino *x) {
   if (!x->connected) {
     post("no BITalino connected");
     return;
   }
   
-  if (s == gensym("/DIGIOUT")) {
-    BITalino::Vbool dig;
-    for (int i = 0; i < 2; i++) {
-      dig.push_back(false);
-    }
-    if (!x->revolution) {
-      for (int i = 0; i < 2; i++) {
-        dig.push_back(false);
-      }
-    }
-    int tot = fmin(argc, 4);
-    for (int i = 0; i < tot; i++) {
-      dig[i] = atom_getlong(argv + i) > 0;
-    }
-    x->digiout_buffer.push(dig);
-    if (x->digiout_buffer.size() > BIT_MAXCTLFRAMES) {
-      x->digiout_buffer.front();
-      x->digiout_buffer.pop();
-    }
-    
-  } else if (s == gensym("/PWM")) {
-    if(!x->revolution) {
-      post("sorry, your old BITalino doesn't support pwm out");
-      return;
-    } else {
-      if (argc > 0) {
-        int val = atom_getlong(argv);
-        val = val > 255 ? 255 : (val < 0 ? 0 : val);
-        x->pwmout_buffer.push(val);
-        if (x->pwmout_buffer.size() > BIT_MAXCTLFRAMES) {
-          x->pwmout_buffer.front();
-          x->pwmout_buffer.pop();
-        }
-      }
-    }
-    
-  } else if (s == gensym("/BATTERY")) { // sets the battery threshold for the led
-    if (argc > 0) {
-      int val = atom_getlong(argv);
-      val = val > 63 ? 63 : (val < 0 ? 0 : val);
-      x->bat_threshold = val;
-    }
-    
-  } else if (s == gensym("/STATE")) {
-    if(!x->revolution) {
-      post("sorry, your old BITalino doesn't support the state command");
-    } else {
-      x->query_state = true;
+  if(!x->revolution) {
+    post("sorry, your old BITalino doesn't support the state command");
+  } else {
+    x->query_state = true;
+  }
+}
+
+void bitalino_battery(t_bitalino *x, long n) {
+  if (!x->connected) {
+    post("no BITalino connected");
+    return;
+  }
+  
+  int val = n > 63 ? 63 : (n < 0 ? 0 : n);
+  x->bat_threshold = val;
+}
+
+void bitalino_pwm(t_bitalino *x, long n) {
+  if (!x->connected) {
+    post("no BITalino connected");
+    return;
+  }
+  
+  if(!x->revolution) {
+    post("sorry, your old BITalino doesn't support pwm out");
+    return;
+  } else {
+    int val = n > 255 ? 255 : (n < 0 ? 0 : n);
+    x->pwmout_buffer.push(val);
+    if (x->pwmout_buffer.size() > BIT_MAXCTLFRAMES) {
+      x->pwmout_buffer.front();
+      x->pwmout_buffer.pop();
     }
   }
 }
 
-/*
-void bitalino_state(t_bitalino *x)
-{
-  if(!x->revolution) {
-    post("sorry, your old BITalino doesn't support the state command");
+void bitalino_trigger(t_bitalino *x, t_symbol *s, long argc, t_atom *argv) {
+  if (!x->connected) {
+    post("no BITalino connected");
     return;
   }
   
-  if (x->connected) {
-    x->query_state = true;
-  } else {
-    post("no BITalino connected");
+  BITalino::Vbool dig;
+  for (int i = 0; i < 2; i++) {
+    dig.push_back(false);
+  }
+  if (!x->revolution) {
+    for (int i = 0; i < 2; i++) {
+      dig.push_back(false);
+    }
+  }
+  int tot = fmin(argc, 4);
+  for (int i = 0; i < tot; i++) {
+    dig[i] = atom_getlong(argv + i) > 0;
+  }
+  x->digiout_buffer.push(dig);
+  if (x->digiout_buffer.size() > BIT_MAXCTLFRAMES) {
+    x->digiout_buffer.front();
+    x->digiout_buffer.pop();
   }
 }
-//*/
+
+//------------------------------------------------------------------------------
 
 void *bitalino_get(t_bitalino *x)
 {
   try {
         
 #ifdef WIN32
+    
     std::string bitalinoaddress = "COM5";
     
     post("BITalino: looking for device");
@@ -317,6 +324,7 @@ void *bitalino_get(t_bitalino *x)
       if (_memicmp(devs[i].name.c_str(), "bitalino", 8) == 0)
         bitalinoaddress = devs[i].macAddr;
     BITalino dev(bitalinoaddress.c_str());
+    
 #else
 
     std::string strPortName;
@@ -420,7 +428,10 @@ void *bitalino_get(t_bitalino *x)
         dev.start(1000, chans);
       }
       
-      while (x->pwmout_buffer.size() > 0) {
+      // replaced "while" by "if" to avoid freezing when buffer is full
+      // (too many messages in), for pwmout and digiout
+      
+      if (x->pwmout_buffer.size() > 0) {
         try {
           dev.pwm(x->pwmout_buffer.front());
           x->pwmout_buffer.pop();
@@ -433,7 +444,7 @@ void *bitalino_get(t_bitalino *x)
         }
       }
       
-      while (x->digiout_buffer.size() > 0) {
+      if (x->digiout_buffer.size() > 0) {
         try {
           dev.trigger(x->digiout_buffer.front());
           x->digiout_buffer.pop();
@@ -550,22 +561,25 @@ void bitalino_bang(t_bitalino *x)
     //t_atomarray state_frame;
     const BITalino::State s = x->state;
     t_atom value_out;
+    std::string msgOutStr;
 
     for (int i = 0; i < 6; i++) {
       atom_setlong(&value_out, s.analog[i]);
       //atomarray_appendatom(&state_frame, &sensor_val);
-      outlet_anything(x->p_outlet, gensym(x->analog_messages_out[i]), 1, &value_out);
+      msgOutStr = "/state" + std::string(x->analog_messages_out[i]);
+      outlet_anything(x->p_outlet, gensym(msgOutStr.c_str()), 1, &value_out);
     }
 
     atom_setlong(&value_out, s.battery);
-    outlet_anything(x->p_outlet, gensym("battery"), 1, &value_out);
+    outlet_anything(x->p_outlet, gensym("/state/battery"), 1, &value_out);
 
     atom_setlong(&value_out, s.batThreshold);
-    outlet_anything(x->p_outlet, gensym("battery_threshold"), 1, &value_out);
+    outlet_anything(x->p_outlet, gensym("/state/battery_threshold"), 1, &value_out);
     
     for (int i = 0; i < 4; i++) {
       atom_setlong(&value_out, s.digital[i] ? 1 : 0);
-      outlet_anything(x->p_outlet, gensym(x->digital_messages_out[i]), 1, &value_out);
+      msgOutStr = "/state" + std::string(x->analog_messages_out[i]);
+      outlet_anything(x->p_outlet, gensym(msgOutStr.c_str()), 1, &value_out);
     }
     
     x->got_state = false;
