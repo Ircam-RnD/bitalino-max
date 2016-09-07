@@ -162,7 +162,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				EXTERNALS_DIR = ../../bin;
 				HEADER_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				MAXAPI_DIR = ../../../c74support;
 			};
 			name = Development;
@@ -173,7 +173,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				EXTERNALS_DIR = ../../bin;
 				HEADER_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				MAXAPI_DIR = ../../../c74support;
 			};
 			name = Deployment;
@@ -181,6 +181,8 @@
 		318530E71C21E6150042B19E /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(MAXAPI_DIR)/**";
@@ -203,6 +205,8 @@
 		318530E81C21E6150042B19E /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(MAXAPI_DIR)/**";

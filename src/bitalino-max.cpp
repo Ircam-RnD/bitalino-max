@@ -34,6 +34,7 @@
 
 #define BIT_NFRAMES 20
 #define BIT_MAXFRAMES 120
+#define BIT_MAXCTLFRAMES 10 // for pwm and digi out
 #define BIT_BT_REQUEST_INTERVAL 10
 #define BIT_ASYNC_POLL_INTERVAL 20
 #define BIT_DEF_SYNC_POLL_INTERVAL 2
@@ -54,7 +55,16 @@ typedef struct _bitalino {
   void                *qelem;           // for message passing between threads
   int                 sleeptime;
   
-  char                continuous;
+  unsigned char       automatic;
+  unsigned char       continuous;
+  
+  bool                query_state;
+  bool                got_state;
+  BITalino::State     state;
+  
+  std::queue<std::vector<bool>> digiout_buffer;
+  std::queue<int>               pwmout_buffer;
+  int                           bat_threshold;
   
   BITalino::VFrame    *frames;
   //BITalino::VFrame    *local_frames;
@@ -64,15 +74,19 @@ typedef struct _bitalino {
   //bool                first_frame;
   unsigned char       frame_zero_id;
   
-  const char          *messages_out[6];
+  const char          *analog_messages_out[6];
+  const char          *digital_messages_out[4];
   void                *m_poll;
   double              poll_interval;
   void                *p_outlet;
   
-  std::string         identifier;       // will be "v1" if old bitalino
+  bool                connected;
+  bool                revolution;   // read : bitalino v2 (pwm, state, only 2I/2O)
+  std::string         bitalino_id;  // can be "ab-cd" (with numbers) or "anonymous"
 } t_bitalino;
 
-
+void bitalino_anything(t_bitalino *x, t_symbol *s, long argc, t_atom *argv);
+//void bitalino_state(t_bitalino *x);
 void bitalino_bang(t_bitalino *x);
 void *bitalino_get(t_bitalino *x);  // threaded function
 void bitalino_qfn(t_bitalino *x);   // function writing frames to thread-safe local frames
@@ -87,6 +101,9 @@ void bitalino_nopoll(t_bitalino *x);
 void bitalino_assist(t_bitalino *x, void *b, long m, long a, char *s);
 void *bitalino_new();
 void bitalino_free(t_bitalino *x);
+//================================ ATTRIBUTE GETTERS / SETTERS :
+t_max_err bitalino_get_automatic(t_bitalino *x, t_object *attr, long *argc, t_atom **argv);
+t_max_err bitalino_set_automatic(t_bitalino *x, t_object *attr, long argc, t_atom *argv);
 
 t_class *bitalino_class;
 
@@ -104,16 +121,27 @@ int C74_EXPORT main(void)
   // (optional) assistance method needs to be declared like this
   class_addmethod(c, (method)bitalino_assist,     "assist",     A_CANT,   0);
   class_addmethod(c, (method)bitalino_disconnect, "disconnect",           0);
+  //class_addmethod(c, (method)bitalino_state,      "state",                0);
+  class_addmethod(c, (method)bitalino_anything,   "anything",   A_GIMME,  0);
+  
+  CLASS_ATTR_CHAR       (c, "automatic",    0, t_bitalino, automatic);
+  CLASS_ATTR_STYLE_LABEL(c, "automatic",    0, "onoff",
+                         "automatic frames polling");
+  //CLASS_ATTR_DEFAULT    (c, "automatic", 0, "255");
+  CLASS_ATTR_ACCESSORS  (c, "automatic", bitalino_get_automatic, bitalino_set_automatic);
   
   CLASS_ATTR_CHAR       (c, "continuous", 0, t_bitalino, continuous);
-  CLASS_ATTR_STYLE_LABEL(c, "continuous", 0, "onoff", "output a regular flow of values");
+  CLASS_ATTR_STYLE_LABEL(c, "continuous", 0, "onoff",
+                         "continuous output of values (if automatic enabled)");
+  //CLASS_ATTR_DEFAULT    (c, "continuous", 0, "255");
+  
   CLASS_ATTR_DOUBLE     (c, "interval",   0, t_bitalino, poll_interval);
   
   class_register(CLASS_BOX, c);
   bitalino_class = c;
   bitalino_busy = false;
   
-  post("bitalino object loaded ...");
+  post("bitalino object loaded");
   return 0;
 }
 
@@ -125,12 +153,17 @@ void *bitalino_new()
   t_bitalino *x;
   
   x = (t_bitalino *)object_alloc(bitalino_class);
-  x->messages_out[0] = "/A1";
-  x->messages_out[1] = "/A2";
-  x->messages_out[2] = "/A3";
-  x->messages_out[3] = "/A4";
-  x->messages_out[4] = "/A5";
-  x->messages_out[5] = "/A6";
+  x->analog_messages_out[0] = "/A1";
+  x->analog_messages_out[1] = "/A2";
+  x->analog_messages_out[2] = "/A3";
+  x->analog_messages_out[3] = "/A4";
+  x->analog_messages_out[4] = "/A5";
+  x->analog_messages_out[5] = "/A6";
+  
+  x->digital_messages_out[0] = "/I1";
+  x->digital_messages_out[1] = "/I2";
+  x->digital_messages_out[2] = "/XX"; // depends on BITalino version (set in 'get')
+  x->digital_messages_out[3] = "/XX"; // depends on BITalino version
   
   x->p_outlet = outlet_new(x, NULL);
   
@@ -148,6 +181,17 @@ void *bitalino_new()
   x->frame_buffer = new std::queue<BITalino::Frame>();//new BITalino::VFrame(100);
   x->frame_zero_id = 0;
   //x->new_frame = false;
+  
+  x->connected = false;
+  x->revolution= false;
+  x->bitalino_id = "";
+  
+  x->automatic = 1;
+  x->continuous = 1;
+  x->query_state = false;
+  x->got_state = false;
+  
+  x->bat_threshold = -1;
   
   return(x);
 }
@@ -178,11 +222,86 @@ void bitalino_assist(t_bitalino *x, void *b, long m, long a, char *s)
   } else {
     switch (a) {
       case 0:
-        sprintf(s,"start, poll <interval>, nopoll");
+        sprintf(s,"connect [mac-suffix], disconnect, getstate, setbatterythreshold [0;63], setpwm [0;255] digiout <0/1 0/1>");
         break;
     }
   }
 }
+
+void bitalino_anything(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
+{
+  if (!x->connected) {
+    post("no BITalino connected");
+    return;
+  }
+  
+  if (s == gensym("/DIGIOUT")) {
+    BITalino::Vbool dig;
+    for (int i = 0; i < 2; i++) {
+      dig.push_back(false);
+    }
+    if (!x->revolution) {
+      for (int i = 0; i < 2; i++) {
+        dig.push_back(false);
+      }
+    }
+    int tot = fmin(argc, 4);
+    for (int i = 0; i < tot; i++) {
+      dig[i] = atom_getlong(argv + i) > 0;
+    }
+    x->digiout_buffer.push(dig);
+    if (x->digiout_buffer.size() > BIT_MAXCTLFRAMES) {
+      x->digiout_buffer.front();
+      x->digiout_buffer.pop();
+    }
+    
+  } else if (s == gensym("/PWM")) {
+    if(!x->revolution) {
+      post("sorry, your old BITalino doesn't support pwm out");
+      return;
+    } else {
+      if (argc > 0) {
+        int val = atom_getlong(argv);
+        val = val > 255 ? 255 : (val < 0 ? 0 : val);
+        x->pwmout_buffer.push(val);
+        if (x->pwmout_buffer.size() > BIT_MAXCTLFRAMES) {
+          x->pwmout_buffer.front();
+          x->pwmout_buffer.pop();
+        }
+      }
+    }
+    
+  } else if (s == gensym("/BATTERY")) { // sets the battery threshold for the led
+    if (argc > 0) {
+      int val = atom_getlong(argv);
+      val = val > 63 ? 63 : (val < 0 ? 0 : val);
+      x->bat_threshold = val;
+    }
+    
+  } else if (s == gensym("/STATE")) {
+    if(!x->revolution) {
+      post("sorry, your old BITalino doesn't support the state command");
+    } else {
+      x->query_state = true;
+    }
+  }
+}
+
+/*
+void bitalino_state(t_bitalino *x)
+{
+  if(!x->revolution) {
+    post("sorry, your old BITalino doesn't support the state command");
+    return;
+  }
+  
+  if (x->connected) {
+    x->query_state = true;
+  } else {
+    post("no BITalino connected");
+  }
+}
+//*/
 
 void *bitalino_get(t_bitalino *x)
 {
@@ -200,20 +319,25 @@ void *bitalino_get(t_bitalino *x)
     BITalino dev(bitalinoaddress.c_str());
 #else
 
-    bool revolution = false;
-    const char *portName = "/dev/tty.bitalino-DevB";
-    
-    try
-    {
-      BITalino dev(portName);
-    }
-    catch (BITalino::Exception &e)
-    {
-      portName = "/dev/tty.BITalino-DevB";
-      revolution = true;
+    std::string strPortName;
+    x->revolution = true;
+
+    if (x->bitalino_id == "anonymous") {
+      strPortName = "/dev/tty.BITalino-DevB";
+    } else {
+      strPortName = "/dev/tty.BITalino-" + x->bitalino_id + "-DevB";
     }
     
-    BITalino dev(portName);
+    try {
+      BITalino dev(strPortName.c_str());
+    } catch (BITalino::Exception &e) {
+      strPortName = "/dev/tty.bitalino-DevB";
+      x->bitalino_id = "anonymous";
+      x->revolution = false;
+    }
+    
+    BITalino dev(strPortName.c_str());
+    x->connected = true;
 
 #endif //WIN32
 
@@ -221,7 +345,7 @@ void *bitalino_get(t_bitalino *x)
     
     post("BITalino version: %s", dev.version().c_str());
     
-    // BITalino channels : EMG, EDA, ECG, ACCEL, LUX, 5TH_CHANNEL (?)
+    // BITalino channels :
     BITalino::Vint chans;
     chans.push_back(0);
     chans.push_back(1);
@@ -235,15 +359,21 @@ void *bitalino_get(t_bitalino *x)
     outputs.push_back(false);
     outputs.push_back(false);
     
-    if (!revolution) {
-      outputs.push_back(true);
+    if (!x->revolution) {
       outputs.push_back(false);
+      outputs.push_back(false);
+      x->digital_messages_out[2] = "/I3";
+      x->digital_messages_out[3] = "/I4";
+    } else {
+      x->digital_messages_out[2] = "/O1";
+      x->digital_messages_out[3] = "/O2";
     }
     
     dev.start(1000, chans);
     dev.trigger(outputs);
     
     bitalino_busy = true;
+    busy_bitalinos[x->bitalino_id] = true;
     x->systhread_cancel = false;
     post("BITalino : connected to device");
     
@@ -253,7 +383,77 @@ void *bitalino_get(t_bitalino *x)
       if (x->systhread_cancel)
         break;
       
+      // if we're not asked to spit a stream of values,
+      // don't leave the loop so bitalino connection is kept alive
+      
       systhread_mutex_lock(x->mutex);
+      
+      // these calls need the device not to be in acquisition :
+      
+      if (x->query_state || x->bat_threshold >= 0) {
+        dev.stop();
+        if (x->query_state) {
+          try {
+            x->state = dev.state();
+            x->query_state = false;
+            x->got_state = true;
+          } catch (BITalino::Exception &e) {
+            post("BITalino exception %s\n", e.getDescription());
+            
+            if (e.code == BITalino::Exception::INVALID_PARAMETER) {
+              post("problem in call to state");
+            }
+          }
+        }
+        if (x->bat_threshold >= 0) {
+          try {
+            dev.battery(x->bat_threshold);
+            x->bat_threshold = -1;
+          } catch (BITalino::Exception &e) {
+            post("BITalino exception %s\n", e.getDescription());
+
+            if (e.code == BITalino::Exception::INVALID_PARAMETER) {
+              post("invalid parameter for battery");
+            }
+          }
+        }
+        dev.start(1000, chans);
+      }
+      
+      while (x->pwmout_buffer.size() > 0) {
+        try {
+          dev.pwm(x->pwmout_buffer.front());
+          x->pwmout_buffer.pop();
+        } catch (BITalino::Exception &e) {
+          post("BITalino exception %s\n", e.getDescription());
+          
+          if (e.code == BITalino::Exception::INVALID_PARAMETER) {
+            post("invalid parameter for pwm\n");
+          }
+        }
+      }
+      
+      while (x->digiout_buffer.size() > 0) {
+        try {
+          dev.trigger(x->digiout_buffer.front());
+          x->digiout_buffer.pop();
+        } catch (BITalino::Exception &e) {
+          post("BITalino exception %s\n", e.getDescription());
+          
+          if (e.code == BITalino::Exception::INVALID_PARAMETER) {
+            post("invalid parameter for trigger");
+          }
+        }
+      }
+      
+      if (!x->automatic) {
+        systhread_mutex_unlock(x->mutex);
+        qelem_set(x->qelem);	// notify main thread using qelem mechanism
+        systhread_sleep(x->sleeptime);
+        continue;
+      }
+      
+      //============== if @automatic is on, continue ==============//
       
       try {
         dev.read(*(x->frames));
@@ -274,17 +474,21 @@ void *bitalino_get(t_bitalino *x)
     
     dev.stop();
     post("BITalino : disconnected from device");
+    x->connected = false;
+    busy_bitalinos[x->bitalino_id] = false;
     bitalino_busy = false;
-    x->systhread_cancel = false;			// reset cancel flag for next time, in case
-    // the thread is created again
-    
-    systhread_exit(0);						// this can return a value to systhread_join();
+    // reset cancel flag for next time, in case the thread is created again
+    x->systhread_cancel = false;
+    systhread_exit(0);
+    // this can return a value to systhread_join();
     return NULL;
     
   } catch (BITalino::Exception &e) {
     post("BITalino exception: %s\n", e.getDescription());
+    busy_bitalinos[x->bitalino_id] = false;
     bitalino_busy = false;
-    bitalino_stop(x);						// this can return a value to systhread_join();
+    bitalino_stop(x);
+    // this can return a value to systhread_join();
     return NULL;
   }
 }
@@ -342,21 +546,55 @@ void bitalino_clock(t_bitalino *x)
 
 void bitalino_bang(t_bitalino *x)
 {
+  if (x->got_state) {
+    //t_atomarray state_frame;
+    const BITalino::State s = x->state;
+    t_atom value_out;
+
+    for (int i = 0; i < 6; i++) {
+      atom_setlong(&value_out, s.analog[i]);
+      //atomarray_appendatom(&state_frame, &sensor_val);
+      outlet_anything(x->p_outlet, gensym(x->analog_messages_out[i]), 1, &value_out);
+    }
+
+    atom_setlong(&value_out, s.battery);
+    outlet_anything(x->p_outlet, gensym("battery"), 1, &value_out);
+
+    atom_setlong(&value_out, s.batThreshold);
+    outlet_anything(x->p_outlet, gensym("battery_threshold"), 1, &value_out);
+    
+    for (int i = 0; i < 4; i++) {
+      atom_setlong(&value_out, s.digital[i] ? 1 : 0);
+      outlet_anything(x->p_outlet, gensym(x->digital_messages_out[i]), 1, &value_out);
+    }
+    
+    x->got_state = false;
+  }
+  
+  if (!x->automatic) return;
+  
   // CONTINUOUS MODE
   if (x->continuous) {
-    const BITalino::Frame &f = x->frame_buffer->front();
-    t_atom value_out;
-    for (int j = 0; j < 6; j++) {
-      atom_setfloat(&value_out, f.analog[j]);
-      outlet_anything(x->p_outlet, gensym(x->messages_out[j]), 1, &value_out);
+    if (!x->frame_buffer->empty()) {
+      const BITalino::Frame &f = x->frame_buffer->front();
+      t_atom value_out;
+      for (int j = 0; j < 6; j++) {
+        atom_setfloat(&value_out, f.analog[j]);
+        outlet_anything(x->p_outlet, gensym(x->analog_messages_out[j]), 1, &value_out);
+      }
+      for (int j = 0; j < 4; j++) {
+        atom_setfloat(&value_out, f.digital[j]);
+        outlet_anything(x->p_outlet, gensym(x->digital_messages_out[j]), 1, &value_out);
+      }
+      
+      systhread_mutex_lock(x->qmutex);
+      
+      if (x->frame_buffer->size() > 1 && !x->frame_buffer->empty()) {
+        x->frame_buffer->pop();
+      }
+      systhread_mutex_unlock(x->qmutex);
     }
     
-    systhread_mutex_lock(x->qmutex);
-    
-    if (x->frame_buffer->size() > 1 && !x->frame_buffer->empty()) {
-      x->frame_buffer->pop();
-    }
-    systhread_mutex_unlock(x->qmutex);
   } else {
     systhread_mutex_lock(x->qmutex);
     while (!x->frame_buffer->empty()) {
@@ -364,7 +602,11 @@ void bitalino_bang(t_bitalino *x)
       t_atom value_out;
       for (int j = 0; j < 6; j++) {
         atom_setfloat(&value_out, f.analog[j]);
-        outlet_anything(x->p_outlet, gensym(x->messages_out[j]), 1, &value_out);
+        outlet_anything(x->p_outlet, gensym(x->analog_messages_out[j]), 1, &value_out);
+      }
+      for (int j = 0; j < 4; j++) {
+        atom_setfloat(&value_out, f.digital[j]);
+        outlet_anything(x->p_outlet, gensym(x->digital_messages_out[j]), 1, &value_out);
       }
       x->frame_buffer->pop();
     }
@@ -381,10 +623,31 @@ void bitalino_connect(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
 
 void bitalino_start(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
 {
+  if (argc == 1) {
+    x->bitalino_id = std::string(atom_getsym(argv)->s_name);
+    post("trying to connect to tty.BITalino-%s-DevB", x->bitalino_id.c_str());
+  } else {
+    x->bitalino_id = "anonymous";
+    post("trying to connect to old anonymous BITalino");
+  }
+  
+  if (busy_bitalinos.find(x->bitalino_id) == busy_bitalinos.end()) {
+    busy_bitalinos[x->bitalino_id] = false; // key doesn't exist so create it
+  } else {
+    if (busy_bitalinos[x->bitalino_id]) {
+      post("BITalino : an object instance is already connected");
+      return;
+    } else {
+      //busy_bitalinos[x->bitalino_id] = true;
+    }
+  }
+  
+  /*
   if (bitalino_busy) {
     post("BITalino : an object instance is already connected");
     return;
   }
+  //*/
     
   if (x->systhread == NULL) {
     //post("starting thread");
@@ -407,6 +670,7 @@ void bitalino_stop(t_bitalino *x)
     //post("stopping thread");
     x->systhread_cancel = true;			// tell the thread to stop
     systhread_join(x->systhread, &ret);	// wait for the thread to stop
+    //busy_bitalinos[x->bitalino_id] = false;
     x->systhread = NULL;
   }
 }
@@ -433,3 +697,39 @@ void bitalino_nopoll(t_bitalino *x)
   clock_unset(x->m_poll);
   //post("stop polling BITalino\n");
 }
+
+//======================= attribute getters / setters ========================//
+
+t_max_err bitalino_get_automatic(t_bitalino *x, t_object *attr, long *argc, t_atom **argv)
+{
+  if (argc && argv) {
+    char alloc;
+    if (atom_alloc(argc, argv, &alloc)) {
+      return MAX_ERR_GENERIC;
+    }
+    atom_setchar_array(*argc, *argv, 1, &x->automatic);
+    //post("automatic getter called");
+  }
+  return MAX_ERR_NONE;
+}
+
+t_max_err bitalino_set_automatic(t_bitalino *x, t_object *attr, long argc, t_atom *argv)
+{
+  if(argc && argv) {
+    unsigned char prev = x->automatic;
+    atom_getchar_array(argc, argv, 1, &x->automatic);
+    if (x->automatic != prev) {
+      if (x->automatic == 0) {
+//        bitalino_poll(x);
+//        post("polling enabled");
+      } else {
+//        bitalino_nopoll(x);
+//        post("polling disabled");
+      }
+    }
+    //post("automatic setter called");
+  }
+  return MAX_ERR_NONE;
+}
+
+
