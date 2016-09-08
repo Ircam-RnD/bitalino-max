@@ -54,7 +54,7 @@
 							"modernui" : 1
 						}
 ,
-						"rect" : [ 0.0, 26.0, 910.0, 607.0 ],
+						"rect" : [ 74.0, 125.0, 910.0, 607.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -186,13 +186,13 @@
 , 							{
 								"box" : 								{
 									"id" : "obj-6",
-									"linecount" : 2,
+									"linecount" : 4,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 437.5, 171.0, 290.0, 33.0 ],
+									"patching_rect" : [ 437.5, 171.0, 303.0, 60.0 ],
 									"style" : "",
-									"text" : "this example needs IRCAM's MuBu for Max library : http://forumnet.ircam.fr/product/mubu-en/"
+									"text" : "this example needs to have IRCAM's MuBu for Max library installed :\n\nhttp://forumnet.ircam.fr/product/mubu-en/"
 								}
 
 							}
@@ -978,9 +978,9 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 494.0, 189.0, 327.0, 221.0 ],
+									"patching_rect" : [ 494.0, 189.0, 390.0, 221.0 ],
 									"style" : "",
-									"text" : "BITalino v2 has 2 digital inputs, 2 digital outputs and a pwm output, as well as new other features such as the possibility to define a low threshold for lighting the low-battery LED, and the possibility to query the current state of the board.\n\none can control the value of the digital outputs with the \"trigger\" message, the value of the pwm output with the \"pwm\" message, and the low threshold for battery LED display with the \"battery\" message.\none can also query the current state of the board with the \"getstate\" message, which will trigger the object to output OSC-style messages with addresses starting with \"/state\" (see what is printed in the max window by the print object) \n\non each frame you get the 6 analog inputs', the 2 digital inputs' and the 2 digital outputs' values"
+									"text" : "BITalino v2 has 2 digital inputs, 2 digital outputs and a pwm output, as well as new other features such as the possibility to define a low threshold for lighting the low-battery LED, and the possibility to query the current state of the board.\n\none can control the value of the digital outputs with the \"trigger\" message, the value of the pwm output with the \"pwm\" message, and the low threshold value for switching the low-battery LED on with the \"battery\" message.\none can also query the current state of the board with the \"getstate\" message, which will trigger the object to output OSC-style messages with addresses starting with \"/state\" (see what is printed in the max window by the print object) \n\non each frame you get the 6 analog inputs', the 2 digital inputs' and the 2 digital outputs' values"
 								}
 
 							}
@@ -1745,14 +1745,54 @@
 						"showontab" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
-									"id" : "obj-6",
-									"linecount" : 5,
+									"id" : "obj-13",
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 356.0, 242.0, 401.0, 74.0 ],
+									"patching_rect" : [ 231.0, 309.0, 41.0, 20.0 ],
 									"style" : "",
-									"text" : "BITalino v1 has 4 digital inputs and 4 digital outputs.\n\nyou can control the state of digital outputs with the \"trigger\" message.\n\non each frame you get the 6 analog inputs' and the 4 digital inputs' values"
+									"text" : "[0;63]"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-3",
+									"maxclass" : "number",
+									"maximum" : 63,
+									"minimum" : 0,
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "bang" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 178.5, 309.0, 50.0, 22.0 ],
+									"style" : ""
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-24",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 178.5, 338.0, 64.0, 22.0 ],
+									"style" : "",
+									"text" : "battery $1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-6",
+									"linecount" : 6,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 308.0, 254.0, 441.0, 87.0 ],
+									"style" : "",
+									"text" : "BITalino v1 has 4 digital inputs and 4 digital outputs.\n\nyou can control the state of digital outputs with the \"trigger\" message, and the low threshold value for switching the low-battery LED on with the \"battery\" message.\n\non each frame you get the 6 analog inputs' and the 4 digital inputs' values"
 								}
 
 							}
@@ -1879,7 +1919,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "int" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 296.5, 237.0, 22.0, 22.0 ],
+									"patching_rect" : [ 256.5, 214.0, 22.0, 22.0 ],
 									"style" : ""
 								}
 
@@ -1892,7 +1932,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "int" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 270.5, 237.0, 22.0, 22.0 ],
+									"patching_rect" : [ 230.5, 214.0, 22.0, 22.0 ],
 									"style" : ""
 								}
 
@@ -1904,7 +1944,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 218.5, 294.0, 92.0, 22.0 ],
+									"patching_rect" : [ 178.5, 271.0, 92.0, 22.0 ],
 									"style" : "",
 									"text" : "prepend trigger"
 								}
@@ -1918,7 +1958,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "int" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 244.5, 237.0, 22.0, 22.0 ],
+									"patching_rect" : [ 204.5, 214.0, 22.0, 22.0 ],
 									"style" : ""
 								}
 
@@ -1931,7 +1971,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "int" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 218.5, 237.0, 22.0, 22.0 ],
+									"patching_rect" : [ 178.5, 214.0, 22.0, 22.0 ],
 									"style" : ""
 								}
 
@@ -1943,7 +1983,7 @@
 									"numinlets" : 4,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 218.5, 266.0, 97.0, 22.0 ],
+									"patching_rect" : [ 178.5, 243.0, 97.0, 22.0 ],
 									"style" : "",
 									"text" : "pak i i i i"
 								}
@@ -2207,6 +2247,24 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-1", 0 ],
+									"disabled" : 0,
+									"hidden" : 0,
+									"source" : [ "obj-24", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-24", 0 ],
+									"disabled" : 0,
+									"hidden" : 0,
+									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-11", 0 ],
 									"disabled" : 0,
 									"hidden" : 0,
@@ -2431,7 +2489,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 222.0, 255.0, 601.0, 154.0 ],
+									"patching_rect" : [ 232.0, 255.0, 601.0, 154.0 ],
 									"style" : "",
 									"text" : "default automatic mode makes the object continuously output values read from the analog and digital inputs. when this mode is enabled, the 2 other attributes can be used to fine-tune how the values will be output (read below). when disabled, one can still control the digital outputs, and with v2 send pwm and getstate commands.\n\ndefault continuous mode uses a FIFO to store the incoming frames and will output them one by one, at a rate defined by the interval property (ms). this adds a little latency due to the FIFO size (120 frames). the ideal interval is 1ms because the framerate is supposed to be 1kHz, but sometimes the bluetooth communication is too slow and you can have duplicate frames if the FIFO gets empty, so 2ms is kind of a good trade-off (if the interval is too large you can miss some frames).\nnot continuous mode means that the object will output new frames as soon as it receives them from the Bluetooth stack. in this mode you never miss any frame, but the output rate can fluctuate a lot."
 								}
@@ -3075,7 +3133,7 @@
 							"modernui" : 1
 						}
 ,
-						"rect" : [ 74.0, 125.0, 910.0, 607.0 ],
+						"rect" : [ 0.0, 26.0, 910.0, 607.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,

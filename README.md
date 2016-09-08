@@ -7,7 +7,7 @@ This object should be compiled with Max SDK version 6 or greater.
 
 ## documentation
 
-open the help file in Max.
+see Max help file.
 
 ## notes
 
@@ -18,4 +18,4 @@ and any number of them can be used simultaneously.
 Windows :   
 still work in progress, not yet compiling with VS2015. available binaries have
 an old interface and might not work with the latest versions of the board.
-PR's welcome.
+pull requests are welcome.
