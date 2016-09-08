@@ -39,10 +39,9 @@
 #define BIT_ASYNC_POLL_INTERVAL 20
 #define BIT_DEF_SYNC_POLL_INTERVAL 2
 
-// Global var prevents other objects to interfere with device currently in use.
-// First object to start connects to BITalino and has the exclusive connection until
-bool bitalino_busy;
-// Same as old boolean flag but now that several simultaneous connections are possible
+// Global vars prevent other objects to interfere with devices currently in use.
+// First object to start on a specific port gets the exclusive connection
+// until it releases it.
 std::map<std::string, bool> busy_bitalinos;
 
 /**
@@ -111,11 +110,13 @@ void bitalino_poll(t_bitalino *x);
 void bitalino_poll(t_bitalino *x, long n);
 void bitalino_nopoll(t_bitalino *x);
 void bitalino_assist(t_bitalino *x, void *b, long m, long a, char *s);
-void *bitalino_new();
+void *bitalino_new(t_symbol *s, long argc, t_atom *argv);
 void bitalino_free(t_bitalino *x);
 //================================ ATTRIBUTE GETTERS / SETTERS :
-t_max_err bitalino_get_automatic(t_bitalino *x, t_object *attr, long *argc, t_atom **argv);
-t_max_err bitalino_set_automatic(t_bitalino *x, t_object *attr, long argc, t_atom *argv);
+t_max_err bitalino_get_automatic(t_bitalino *x, t_object *attr,
+                                 long *argc, t_atom **argv);
+t_max_err bitalino_set_automatic(t_bitalino *x, t_object *attr,
+                                 long argc, t_atom *argv);
 
 t_class *bitalino_class;
 
@@ -127,7 +128,8 @@ int C74_EXPORT main(void)
 {
   t_class *c;
   
-  c = class_new("bitalino", (method)bitalino_new, (method)bitalino_free, sizeof(t_bitalino), 0L, A_GIMME, 0);
+  c = class_new("bitalino", (method)bitalino_new, (method)bitalino_free,
+                sizeof(t_bitalino), 0L, A_GIMME, 0);
   
   class_addmethod(c, (method)bitalino_connect,    "connect",    A_GIMME,  0);
   // (optional) assistance method needs to be declared like this
@@ -135,6 +137,7 @@ int C74_EXPORT main(void)
   class_addmethod(c, (method)bitalino_disconnect, "disconnect",           0);
   // try this with windows later, doesn't work on osx :
   //class_addmethod(c, (method)bitalino_find,       "find",                 0);
+  //class_addmethod(c, (method)bitalino_bang,       "bang",                 0);
   class_addmethod(c, (method)bitalino_getstate,   "getstate",             0);
   class_addmethod(c, (method)bitalino_battery,    "battery",    A_LONG,   0);
   class_addmethod(c, (method)bitalino_pwm,        "pwm",        A_LONG,   0);
@@ -156,7 +159,6 @@ int C74_EXPORT main(void)
   
   class_register(CLASS_BOX, c);
   bitalino_class = c;
-  bitalino_busy = false;
   
   post("bitalino object loaded");
   return 0;
@@ -165,7 +167,7 @@ int C74_EXPORT main(void)
 
 //--------------------------------------------------------------------------
 
-void *bitalino_new()
+void *bitalino_new(t_symbol *s, long argc, t_atom *argv)
 {
   t_bitalino *x;
   
@@ -211,6 +213,8 @@ void *bitalino_new()
   x->got_state = false;
   
   x->bat_threshold = -1;
+  
+  attr_args_process(x, argc, argv);
   
   return(x);
 }
@@ -386,7 +390,6 @@ void *bitalino_get(t_bitalino *x)
     dev.start(1000, chans);
     dev.trigger(outputs);
     
-    bitalino_busy = true;
     busy_bitalinos[x->bitalino_portname] = true;
     x->systhread_cancel = false;
     post("BITalino : connected to device");
@@ -493,7 +496,6 @@ void *bitalino_get(t_bitalino *x)
     post("BITalino : disconnected from device");
     x->connected = false;
     busy_bitalinos[x->bitalino_portname] = false;
-    bitalino_busy = false;
     // reset cancel flag for next time, in case the thread is created again
     x->systhread_cancel = false;
     systhread_exit(0);
@@ -503,7 +505,6 @@ void *bitalino_get(t_bitalino *x)
   } catch (BITalino::Exception &e) {
     post("BITalino exception: %s\n", e.getDescription());
     busy_bitalinos[x->bitalino_portname] = false;
-    bitalino_busy = false;
     bitalino_stop(x);
     // this can return a value to systhread_join();
     return NULL;
@@ -520,18 +521,6 @@ void bitalino_qfn(t_bitalino *x)
     systhread_mutex_lock(x->qmutex);
     for (int i=0; i<BIT_NFRAMES; i++) {
       x->frame_buffer->push((*x->frames)[i]);
-      /*
-      BITalino::Frame *f = new BITalino::Frame();
-      BITalino::Frame xf = (*x->frames)[i];
-      f->seq = xf.seq;
-      for(int i=0; i<4; i++) {
-          f->digital[i] = xf.digital[i];
-      }
-      for(int i=0; i<6; i++) {
-          f->analog[i] = xf.analog[i];
-      }
-      x->frame_buffer->push(*f);
-      //*/
     }
 
     // CONTINUOUS MODE
@@ -556,22 +545,17 @@ void bitalino_clock(t_bitalino *x)
     clock_fdelay(x->m_poll, static_cast<double>(BIT_ASYNC_POLL_INTERVAL));
   }
   bitalino_bang(x);
-
-  //clock_fdelay(x->m_poll, x->poll_interval);
-  //bitalino_bang(x);
 }
 
 void bitalino_bang(t_bitalino *x)
 {
   if (x->got_state) {
-    //t_atomarray state_frame;
     const BITalino::State s = x->state;
     t_atom value_out;
     std::string msgOutStr;
 
     for (int i = 0; i < 6; i++) {
       atom_setlong(&value_out, s.analog[i]);
-      //atomarray_appendatom(&state_frame, &sensor_val);
       msgOutStr = "/state" + std::string(x->analog_messages_out[i]);
       outlet_anything(x->p_outlet, gensym(msgOutStr.c_str()), 1, &value_out);
     }
@@ -600,11 +584,13 @@ void bitalino_bang(t_bitalino *x)
       t_atom value_out;
       for (int j = 0; j < 6; j++) {
         atom_setfloat(&value_out, f.analog[j]);
-        outlet_anything(x->p_outlet, gensym(x->analog_messages_out[j]), 1, &value_out);
+        outlet_anything(x->p_outlet, gensym(x->analog_messages_out[j]),
+                        1, &value_out);
       }
       for (int j = 0; j < 4; j++) {
         atom_setfloat(&value_out, f.digital[j]);
-        outlet_anything(x->p_outlet, gensym(x->digital_messages_out[j]), 1, &value_out);
+        outlet_anything(x->p_outlet, gensym(x->digital_messages_out[j]),
+                        1, &value_out);
       }
       
       systhread_mutex_lock(x->qmutex);
@@ -622,11 +608,13 @@ void bitalino_bang(t_bitalino *x)
       t_atom value_out;
       for (int j = 0; j < 6; j++) {
         atom_setfloat(&value_out, f.analog[j]);
-        outlet_anything(x->p_outlet, gensym(x->analog_messages_out[j]), 1, &value_out);
+        outlet_anything(x->p_outlet, gensym(x->analog_messages_out[j]),
+                        1, &value_out);
       }
       for (int j = 0; j < 4; j++) {
         atom_setfloat(&value_out, f.digital[j]);
-        outlet_anything(x->p_outlet, gensym(x->digital_messages_out[j]), 1, &value_out);
+        outlet_anything(x->p_outlet, gensym(x->digital_messages_out[j]),
+                        1, &value_out);
       }
       x->frame_buffer->pop();
     }
@@ -640,7 +628,8 @@ void bitalino_find(t_bitalino *x) {
     BITalino::VDevInfo info = BITalino::find();
     post("list of found BITalino devices :\n");
     for (int i = 0; i < info.size(); i++) {
-      std::string line = "mac : " + info[i].macAddr + ", name : " + info[i].name;
+      std::string line = "mac : " + info[i].macAddr +
+                         ", name : " + info[i].name;
       post(line.c_str());
     }
   } catch (BITalino::Exception &e) {
@@ -723,34 +712,6 @@ void bitalino_start(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
     }
   }
   
-  /*
-  if (argc == 1) {
-    x->bitalino_id = std::string(atom_getsym(argv)->s_name);
-    post("trying to connect to tty.BITalino-%s-DevB", x->bitalino_id.c_str());
-  } else {
-    x->bitalino_id = "anonymous";
-    post("trying to connect to old anonymous BITalino");
-  }
-  
-  if (busy_bitalinos.find(x->bitalino_id) == busy_bitalinos.end()) {
-    busy_bitalinos[x->bitalino_id] = false; // key doesn't exist so create it
-  } else {
-    if (busy_bitalinos[x->bitalino_id]) {
-      post("BITalino : an object instance is already connected");
-      return;
-    } else {
-      //busy_bitalinos[x->bitalino_id] = true;
-    }
-  }
-   */
-  
-  /*
-  if (bitalino_busy) {
-    post("BITalino : an object instance is already connected");
-    return;
-  }
-  //*/
-    
   if (x->systhread == NULL) {
     //post("starting thread");
     systhread_create((method) bitalino_get, x, 0, 0, 0, &x->systhread);
@@ -802,7 +763,8 @@ void bitalino_nopoll(t_bitalino *x)
 
 //======================= attribute getters / setters ========================//
 
-t_max_err bitalino_get_automatic(t_bitalino *x, t_object *attr, long *argc, t_atom **argv)
+t_max_err bitalino_get_automatic(t_bitalino *x, t_object *attr,
+                                 long *argc, t_atom **argv)
 {
   if (argc && argv) {
     char alloc;
@@ -815,7 +777,8 @@ t_max_err bitalino_get_automatic(t_bitalino *x, t_object *attr, long *argc, t_at
   return MAX_ERR_NONE;
 }
 
-t_max_err bitalino_set_automatic(t_bitalino *x, t_object *attr, long argc, t_atom *argv)
+t_max_err bitalino_set_automatic(t_bitalino *x, t_object *attr,
+                                 long argc, t_atom *argv)
 {
   if(argc && argv) {
     unsigned char prev = x->automatic;
@@ -829,7 +792,7 @@ t_max_err bitalino_set_automatic(t_bitalino *x, t_object *attr, long argc, t_ato
 //        post("polling disabled");
       }
     }
-    //post("automatic setter called");
+    //post("automatic setter called  with value %ld", x->automatic);
   }
   return MAX_ERR_NONE;
 }
