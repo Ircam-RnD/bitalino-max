@@ -45,6 +45,10 @@ bool bitalino_busy;
 // Same as old boolean flag but now that several simultaneous connections are possible
 std::map<std::string, bool> busy_bitalinos;
 
+/**
+ * @todo add a method to control buffer queues sizes
+ */
+
 typedef struct _bitalino {
   t_object p_ob;
   
@@ -81,10 +85,13 @@ typedef struct _bitalino {
   void                *p_outlet;
   
   bool                connected;
-  bool                revolution;   // read : bitalino v2 (pwm, state, only 2I/2O)
-  std::string         bitalino_id;  // can be "ab-cd" (with numbers) or "anonymous"
+  int                 bitalino_version;
+  int                 bitalino_id;
+  std::string         bitalino_mac;
+  std::string         bitalino_portname;  // can be "ab-cd" (with numbers) or "anonymous"
 } t_bitalino;
 
+void bitalino_find(t_bitalino *x);
 void bitalino_getstate(t_bitalino *x);
 void bitalino_battery(t_bitalino *x, long n);
 void bitalino_pwm(t_bitalino *x, long n);
@@ -126,6 +133,8 @@ int C74_EXPORT main(void)
   // (optional) assistance method needs to be declared like this
   class_addmethod(c, (method)bitalino_assist,     "assist",     A_CANT,   0);
   class_addmethod(c, (method)bitalino_disconnect, "disconnect",           0);
+  // try this with windows later, doesn't work on osx :
+  //class_addmethod(c, (method)bitalino_find,       "find",                 0);
   class_addmethod(c, (method)bitalino_getstate,   "getstate",             0);
   class_addmethod(c, (method)bitalino_battery,    "battery",    A_LONG,   0);
   class_addmethod(c, (method)bitalino_pwm,        "pwm",        A_LONG,   0);
@@ -191,8 +200,10 @@ void *bitalino_new()
   //x->new_frame = false;
   
   x->connected = false;
-  x->revolution= false;
-  x->bitalino_id = "";
+  x->bitalino_version = 0;
+  x->bitalino_id = 0;
+  x->bitalino_mac = "";
+  x->bitalino_portname = "";
   
   x->automatic = 1;
   x->continuous = 1;
@@ -245,8 +256,8 @@ void bitalino_getstate(t_bitalino *x) {
     return;
   }
   
-  if(!x->revolution) {
-    post("sorry, your old BITalino doesn't support the state command");
+  if(x->bitalino_version < 2) {
+    post("sorry, BITalino v1 doesn't support the state command");
   } else {
     x->query_state = true;
   }
@@ -268,8 +279,8 @@ void bitalino_pwm(t_bitalino *x, long n) {
     return;
   }
   
-  if(!x->revolution) {
-    post("sorry, your old BITalino doesn't support pwm out");
+  if(x->bitalino_version < 2) {
+    post("sorry, BITalino v1 doesn't support the pwm command");
     return;
   } else {
     int val = n > 255 ? 255 : (n < 0 ? 0 : n);
@@ -291,7 +302,7 @@ void bitalino_trigger(t_bitalino *x, t_symbol *s, long argc, t_atom *argv) {
   for (int i = 0; i < 2; i++) {
     dig.push_back(false);
   }
-  if (!x->revolution) {
+  if (x->bitalino_version < 2) {
     for (int i = 0; i < 2; i++) {
       dig.push_back(false);
     }
@@ -327,24 +338,19 @@ void *bitalino_get(t_bitalino *x)
     
 #else
 
-    std::string strPortName;
-    x->revolution = true;
+    if (x->bitalino_portname == "unknown") {
+      x->bitalino_portname = "/dev/tty.BITalino-DevB";
+      x->bitalino_version = 2;
 
-    if (x->bitalino_id == "anonymous") {
-      strPortName = "/dev/tty.BITalino-DevB";
-    } else {
-      strPortName = "/dev/tty.BITalino-" + x->bitalino_id + "-DevB";
+      try {
+        BITalino dev(x->bitalino_portname.c_str());
+      } catch (BITalino::Exception &e) {
+        x->bitalino_portname = "/dev/tty.bitalino-DevB";
+        x->bitalino_version = 1;
+      }
     }
     
-    try {
-      BITalino dev(strPortName.c_str());
-    } catch (BITalino::Exception &e) {
-      strPortName = "/dev/tty.bitalino-DevB";
-      x->bitalino_id = "anonymous";
-      x->revolution = false;
-    }
-    
-    BITalino dev(strPortName.c_str());
+    BITalino dev(x->bitalino_portname.c_str());
     x->connected = true;
 
 #endif //WIN32
@@ -367,7 +373,7 @@ void *bitalino_get(t_bitalino *x)
     outputs.push_back(false);
     outputs.push_back(false);
     
-    if (!x->revolution) {
+    if (x->bitalino_version < 2) {
       outputs.push_back(false);
       outputs.push_back(false);
       x->digital_messages_out[2] = "/I3";
@@ -381,7 +387,7 @@ void *bitalino_get(t_bitalino *x)
     dev.trigger(outputs);
     
     bitalino_busy = true;
-    busy_bitalinos[x->bitalino_id] = true;
+    busy_bitalinos[x->bitalino_portname] = true;
     x->systhread_cancel = false;
     post("BITalino : connected to device");
     
@@ -486,7 +492,7 @@ void *bitalino_get(t_bitalino *x)
     dev.stop();
     post("BITalino : disconnected from device");
     x->connected = false;
-    busy_bitalinos[x->bitalino_id] = false;
+    busy_bitalinos[x->bitalino_portname] = false;
     bitalino_busy = false;
     // reset cancel flag for next time, in case the thread is created again
     x->systhread_cancel = false;
@@ -496,7 +502,7 @@ void *bitalino_get(t_bitalino *x)
     
   } catch (BITalino::Exception &e) {
     post("BITalino exception: %s\n", e.getDescription());
-    busy_bitalinos[x->bitalino_id] = false;
+    busy_bitalinos[x->bitalino_portname] = false;
     bitalino_busy = false;
     bitalino_stop(x);
     // this can return a value to systhread_join();
@@ -628,6 +634,19 @@ void bitalino_bang(t_bitalino *x)
   }
 }
 
+// this doesn't seem to work (at least on osx) :
+void bitalino_find(t_bitalino *x) {
+  try {
+    BITalino::VDevInfo info = BITalino::find();
+    post("list of found BITalino devices :\n");
+    for (int i = 0; i < info.size(); i++) {
+      std::string line = "mac : " + info[i].macAddr + ", name : " + info[i].name;
+      post(line.c_str());
+    }
+  } catch (BITalino::Exception &e) {
+    post("BITalino exception : %s\n", e.getDescription());
+  }
+}
 
 void bitalino_connect(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
 {
@@ -637,6 +656,74 @@ void bitalino_connect(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
 
 void bitalino_start(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
 {
+  x->bitalino_version = 0;
+  x->bitalino_id = 0;
+  x->bitalino_mac = "";
+  x->bitalino_portname = "unknown";
+  
+  if (argc > 0) {
+    std::string arg1 = std::string(atom_getsym(argv)->s_name);
+    if (arg1 == "v1") {
+      x->bitalino_version = 1;
+      if (argc > 1) {
+        int arg2 = atom_getlong(argv + 1);
+        x->bitalino_id = arg2;
+        x->bitalino_portname = "/dev/tty.bitalino-DevB-" + std::to_string(arg2);
+      } else {
+        x->bitalino_portname = "/dev/tty.bitalino-DevB";
+      }
+    } else if (arg1 == "v2") {
+      x->bitalino_version = 2;
+      if (argc > 1) {
+        switch (atom_gettype(argv + 1)) {
+          case A_LONG:
+          {
+            int longarg2 = atom_getlong(argv + 1);
+            x->bitalino_id = longarg2;
+            x->bitalino_portname = "/dev/tty.BITalino-DevB-" +
+                                   std::to_string(longarg2);
+          }
+          break;
+            
+          case A_SYM:
+          {
+            std::string strarg2 = std::string(atom_getsym(argv + 1)->s_name);
+            x->bitalino_mac = strarg2;
+            x->bitalino_portname = "/dev/tty.BITalino-" + strarg2 + "-DevB";
+          }
+          break;
+            
+          default:
+          {
+            x->bitalino_portname = "/dev/tty.BITalino-DevB";
+          }
+          break;
+        }
+      } else {
+        x->bitalino_portname = "/dev/tty.BITalino-DevB";
+      }
+    } else {
+      x->bitalino_version = 2;
+      x->bitalino_mac = std::string(atom_getsym(argv)->s_name);
+      x->bitalino_portname = "/dev/tty.BITalino-" + x->bitalino_mac + "-DevB";
+    }
+  } else {
+    x->bitalino_portname = "unknown";
+  }
+  
+  
+  if (busy_bitalinos.find(x->bitalino_portname) == busy_bitalinos.end()) {
+    busy_bitalinos[x->bitalino_portname] = false;
+  } else {
+    if (busy_bitalinos[x->bitalino_portname]) {
+      post("BITalino : port already used");
+      return;
+    } else {
+      // do nothing
+    }
+  }
+  
+  /*
   if (argc == 1) {
     x->bitalino_id = std::string(atom_getsym(argv)->s_name);
     post("trying to connect to tty.BITalino-%s-DevB", x->bitalino_id.c_str());
@@ -655,6 +742,7 @@ void bitalino_start(t_bitalino *x, t_symbol *s, long argc, t_atom *argv)
       //busy_bitalinos[x->bitalino_id] = true;
     }
   }
+   */
   
   /*
   if (bitalino_busy) {
