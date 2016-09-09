@@ -54,8 +54,8 @@
 							"modernui" : 1
 						}
 ,
-						"rect" : [ 74.0, 125.0, 910.0, 607.0 ],
-						"bglocked" : 0,
+						"rect" : [ 0.0, 26.0, 910.0, 607.0 ],
+						"bglocked" : 1,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
 						"default_fontface" : 0,
@@ -85,43 +85,16 @@
 						"boxes" : [ 							{
 								"box" : 								{
 									"hidden" : 1,
-									"id" : "obj-52",
-									"linecount" : 2,
+									"id" : "obj-7",
+									"linecount" : 3,
 									"maxclass" : "message",
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
+									"patching_rect" : [ 511.5, 116.0, 229.0, 49.0 ],
+									"presentation_rect" : [ 605.0, 76.0, 0.0, 0.0 ],
 									"style" : "",
-									"text" : ";\rmax launchbrowser www.bitalino.com"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 36.0,
-									"id" : "obj-51",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
-									"style" : "",
-									"text" : "bitalino"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-53",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 170.0, 72.0, 241.0, 27.0 ],
-									"style" : "",
-									"text" : "BlueTooth device with Max"
+									"text" : ";\rmax launchbrowser http://forumnet.ircam.fr/product/mubu-en/"
 								}
 
 							}
@@ -129,33 +102,20 @@
 								"box" : 								{
 									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
 									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-54",
+									"fontsize" : 12.0,
+									"id" : "obj-8",
 									"maxclass" : "textbutton",
 									"numinlets" : 1,
 									"numoutlets" : 3,
 									"outlettype" : [ "", "", "int" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
+									"patching_rect" : [ 437.5, 206.0, 242.75, 17.0 ],
+									"presentation_rect" : [ 536.0, 121.0, 0.0, 0.0 ],
 									"style" : "",
-									"text" : "BITalino",
+									"text" : "http://forumnet.ircam.fr/product/mubu-en/",
 									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
 									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
 									"usetextovercolor" : 1
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-55",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
-									"style" : "",
-									"text" : "use any "
 								}
 
 							}
@@ -186,13 +146,13 @@
 , 							{
 								"box" : 								{
 									"id" : "obj-6",
-									"linecount" : 4,
+									"linecount" : 2,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 437.5, 171.0, 303.0, 60.0 ],
+									"patching_rect" : [ 437.5, 171.0, 303.0, 33.0 ],
 									"style" : "",
-									"text" : "this example needs to have IRCAM's MuBu for Max library installed :\n\nhttp://forumnet.ircam.fr/product/mubu-en/"
+									"text" : "this example needs to have IRCAM's MuBu for Max library installed :"
 								}
 
 							}
@@ -650,6 +610,88 @@
 							}
 , 							{
 								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-53",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 170.0, 72.0, 241.0, 27.0 ],
+									"style" : "",
+									"text" : "BlueTooth device with Max"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-54",
+									"maxclass" : "textbutton",
+									"numinlets" : 1,
+									"numoutlets" : 3,
+									"outlettype" : [ "", "", "int" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "BITalino",
+									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
+									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
+									"usetextovercolor" : 1
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 36.0,
+									"id" : "obj-51",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
+									"style" : "",
+									"text" : "bitalino"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-55",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "use any "
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"hidden" : 1,
+									"id" : "obj-52",
+									"linecount" : 2,
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
+									"style" : "",
+									"text" : ";\rmax launchbrowser www.bitalino.com"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"angle" : 270.0,
 									"background" : 1,
 									"grad1" : [ 1.0, 1.0, 1.0, 1.0 ],
@@ -784,6 +826,15 @@
 								}
 
 							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-7", 0 ],
+									"disabled" : 0,
+									"hidden" : 1,
+									"source" : [ "obj-8", 0 ]
+								}
+
+							}
  ]
 					}
 ,
@@ -831,7 +882,7 @@
 						}
 ,
 						"rect" : [ 0.0, 26.0, 910.0, 607.0 ],
-						"bglocked" : 0,
+						"bglocked" : 1,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
 						"default_fontface" : 0,
@@ -953,7 +1004,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 320.0, 207.0, 47.0, 20.0 ],
+									"patching_rect" : [ 319.0, 207.0, 47.0, 20.0 ],
 									"style" : "",
 									"text" : "[0;255]"
 								}
@@ -1207,83 +1258,6 @@
 							}
 , 							{
 								"box" : 								{
-									"hidden" : 1,
-									"id" : "obj-52",
-									"linecount" : 2,
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
-									"style" : "",
-									"text" : ";\rmax launchbrowser www.bitalino.com"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 36.0,
-									"id" : "obj-51",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
-									"style" : "",
-									"text" : "bitalino"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-53",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 170.0, 72.0, 352.0, 27.0 ],
-									"style" : "",
-									"text" : "BlueTooth device with Max : v2 features"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-54",
-									"maxclass" : "textbutton",
-									"numinlets" : 1,
-									"numoutlets" : 3,
-									"outlettype" : [ "", "", "int" ],
-									"parameter_enable" : 0,
-									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
-									"style" : "",
-									"text" : "BITalino",
-									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
-									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
-									"usetextovercolor" : 1
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-55",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
-									"style" : "",
-									"text" : "use any "
-								}
-
-							}
-, 							{
-								"box" : 								{
 									"id" : "obj-29",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
@@ -1384,7 +1358,7 @@
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
 									"parameter_enable" : 0,
-									"patching_rect" : [ 268.5, 207.0, 50.0, 22.0 ],
+									"patching_rect" : [ 267.5, 207.0, 50.0, 22.0 ],
 									"style" : ""
 								}
 
@@ -1399,6 +1373,88 @@
 									"patching_rect" : [ 268.0, 236.0, 53.0, 22.0 ],
 									"style" : "",
 									"text" : "pwm $1"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-53",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 170.0, 72.0, 352.0, 27.0 ],
+									"style" : "",
+									"text" : "BlueTooth device with Max : v2 features"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-54",
+									"maxclass" : "textbutton",
+									"numinlets" : 1,
+									"numoutlets" : 3,
+									"outlettype" : [ "", "", "int" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "BITalino",
+									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
+									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
+									"usetextovercolor" : 1
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 36.0,
+									"id" : "obj-51",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
+									"style" : "",
+									"text" : "bitalino"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-55",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "use any "
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"hidden" : 1,
+									"id" : "obj-52",
+									"linecount" : 2,
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
+									"style" : "",
+									"text" : ";\rmax launchbrowser www.bitalino.com"
 								}
 
 							}
@@ -1716,7 +1772,7 @@
 						}
 ,
 						"rect" : [ 0.0, 26.0, 910.0, 607.0 ],
-						"bglocked" : 0,
+						"bglocked" : 1,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
 						"default_fontface" : 0,
@@ -1790,7 +1846,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 308.0, 254.0, 441.0, 87.0 ],
+									"patching_rect" : [ 308.0, 254.0, 444.0, 87.0 ],
 									"style" : "",
 									"text" : "BITalino v1 has 4 digital inputs and 4 digital outputs.\n\nyou can control the state of digital outputs with the \"trigger\" message, and the low threshold value for switching the low-battery LED on with the \"battery\" message.\n\non each frame you get the 6 analog inputs' and the 4 digital inputs' values"
 								}
@@ -1831,83 +1887,6 @@
 									"patching_rect" : [ 68.0, 161.0, 87.0, 22.0 ],
 									"style" : "",
 									"text" : "disconnect"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"hidden" : 1,
-									"id" : "obj-52",
-									"linecount" : 2,
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
-									"style" : "",
-									"text" : ";\rmax launchbrowser www.bitalino.com"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 36.0,
-									"id" : "obj-51",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
-									"style" : "",
-									"text" : "bitalino"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-53",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 170.0, 72.0, 352.0, 27.0 ],
-									"style" : "",
-									"text" : "BlueTooth device with Max : v1 features"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-54",
-									"maxclass" : "textbutton",
-									"numinlets" : 1,
-									"numoutlets" : 3,
-									"outlettype" : [ "", "", "int" ],
-									"parameter_enable" : 0,
-									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
-									"style" : "",
-									"text" : "BITalino",
-									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
-									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
-									"usetextovercolor" : 1
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-55",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
-									"style" : "",
-									"text" : "use any "
 								}
 
 							}
@@ -2169,6 +2148,88 @@
 									"patching_rect" : [ 68.0, 405.0, 63.0, 26.0 ],
 									"style" : "",
 									"text" : "bitalino"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-53",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 170.0, 72.0, 352.0, 27.0 ],
+									"style" : "",
+									"text" : "BlueTooth device with Max : v1 features"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-54",
+									"maxclass" : "textbutton",
+									"numinlets" : 1,
+									"numoutlets" : 3,
+									"outlettype" : [ "", "", "int" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "BITalino",
+									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
+									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
+									"usetextovercolor" : 1
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-55",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "use any "
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 36.0,
+									"id" : "obj-51",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
+									"style" : "",
+									"text" : "bitalino"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"hidden" : 1,
+									"id" : "obj-52",
+									"linecount" : 2,
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
+									"style" : "",
+									"text" : ";\rmax launchbrowser www.bitalino.com"
 								}
 
 							}
@@ -2441,7 +2502,7 @@
 						}
 ,
 						"rect" : [ 0.0, 26.0, 910.0, 607.0 ],
-						"bglocked" : 0,
+						"bglocked" : 1,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
 						"default_fontface" : 0,
@@ -2504,83 +2565,6 @@
 									"patching_rect" : [ 163.0, 138.0, 368.0, 20.0 ],
 									"style" : "",
 									"text" : "< add optional arguments to fit your BITalino version and port name"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"hidden" : 1,
-									"id" : "obj-52",
-									"linecount" : 2,
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
-									"style" : "",
-									"text" : ";\rmax launchbrowser www.bitalino.com"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 36.0,
-									"id" : "obj-51",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
-									"style" : "",
-									"text" : "bitalino"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-53",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 170.0, 72.0, 241.0, 27.0 ],
-									"style" : "",
-									"text" : "BlueTooth device with Max"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-54",
-									"maxclass" : "textbutton",
-									"numinlets" : 1,
-									"numoutlets" : 3,
-									"outlettype" : [ "", "", "int" ],
-									"parameter_enable" : 0,
-									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
-									"style" : "",
-									"text" : "BITalino",
-									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
-									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
-									"usetextovercolor" : 1
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 18.0,
-									"id" : "obj-55",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
-									"style" : "",
-									"text" : "use any "
 								}
 
 							}
@@ -2885,6 +2869,88 @@
 							}
 , 							{
 								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-53",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 170.0, 72.0, 241.0, 27.0 ],
+									"style" : "",
+									"text" : "BlueTooth device with Max"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-54",
+									"maxclass" : "textbutton",
+									"numinlets" : 1,
+									"numoutlets" : 3,
+									"outlettype" : [ "", "", "int" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 90.0, 71.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "BITalino",
+									"textoncolor" : [ 0.32549, 0.345098, 0.372549, 1.0 ],
+									"textovercolor" : [ 0.461105, 0.492646, 0.591878, 1.0 ],
+									"usetextovercolor" : 1
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 36.0,
+									"id" : "obj-51",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
+									"style" : "",
+									"text" : "bitalino"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 18.0,
+									"id" : "obj-55",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 72.0, 83.0, 27.0 ],
+									"style" : "",
+									"text" : "use any "
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"hidden" : 1,
+									"id" : "obj-52",
+									"linecount" : 2,
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
+									"style" : "",
+									"text" : ";\rmax launchbrowser www.bitalino.com"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"angle" : 270.0,
 									"background" : 1,
 									"grad1" : [ 1.0, 1.0, 1.0, 1.0 ],
@@ -3133,8 +3199,8 @@
 							"modernui" : 1
 						}
 ,
-						"rect" : [ 0.0, 26.0, 910.0, 607.0 ],
-						"bglocked" : 0,
+						"rect" : [ 74.0, 125.0, 910.0, 607.0 ],
+						"bglocked" : 1,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
 						"default_fontface" : 0,
@@ -3233,13 +3299,13 @@
 , 							{
 								"box" : 								{
 									"id" : "obj-20",
-									"linecount" : 4,
+									"linecount" : 3,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 51.0, 474.0, 367.0, 60.0 ],
+									"patching_rect" : [ 51.0, 465.0, 380.0, 47.0 ],
 									"style" : "",
-									"text" : "you cannot connect to the same board from two different objects :\none physical board = one bitalino object.\nyou should be able to connect to as many boards of any version as you want simultaneously, by instantiating as many bitalino objects."
+									"text" : "one physical board = one bitalino object.\none should be able to connect to as many boards of any version as one wants simultaneously, by instantiating as many bitalino objects."
 								}
 
 							}
@@ -3249,9 +3315,9 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 157.0, 344.0, 248.0, 20.0 ],
+									"patching_rect" : [ 157.0, 344.0, 213.0, 20.0 ],
 									"style" : "",
-									"text" : "do the same with optional \"v2\" first argument"
+									"text" : "same with optional \"v2\" first argument"
 								}
 
 							}
@@ -3303,7 +3369,7 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 157.0, 318.0, 375.0, 20.0 ],
 									"style" : "",
-									"text" : "connects to the port \"BITalino-61-01-DevB\" (firmware version >= 5.4)"
+									"text" : "connects to the port \"BITalino-61-01-DevB\" (firmware version > 5.0)"
 								}
 
 							}
@@ -3376,36 +3442,7 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 157.0, 173.0, 391.0, 20.0 ],
 									"style" : "",
-									"text" : "shortcut to connect to default BITalino board with firmware version < 5.4"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"hidden" : 1,
-									"id" : "obj-52",
-									"linecount" : 2,
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
-									"style" : "",
-									"text" : ";\rmax launchbrowser www.bitalino.com"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"fontface" : 3,
-									"fontsize" : 36.0,
-									"id" : "obj-51",
-									"maxclass" : "comment",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
-									"style" : "",
-									"text" : "bitalino"
+									"text" : "shortcut to connect to default BITalino board with firmware version < 5.1"
 								}
 
 							}
@@ -3643,6 +3680,37 @@
 , 							{
 								"box" : 								{
 									"fontface" : 3,
+									"fontsize" : 12.0,
+									"id" : "obj-19",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 51.0, 446.0, 69.0, 20.0 ],
+									"style" : "",
+									"text" : "limitation :"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"hidden" : 1,
+									"id" : "obj-52",
+									"linecount" : 2,
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 159.0, 26.0, 211.0, 35.0 ],
+									"style" : "",
+									"text" : ";\rmax launchbrowser www.bitalino.com"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
 									"fontsize" : 18.0,
 									"id" : "obj-53",
 									"maxclass" : "comment",
@@ -3656,6 +3724,7 @@
 							}
 , 							{
 								"box" : 								{
+									"background" : 1,
 									"bgcolor" : [ 0.290196, 0.309804, 0.301961, 0.0 ],
 									"fontface" : 3,
 									"fontsize" : 18.0,
@@ -3676,6 +3745,22 @@
 							}
 , 							{
 								"box" : 								{
+									"background" : 1,
+									"fontface" : 3,
+									"fontsize" : 36.0,
+									"id" : "obj-51",
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 16.0, 26.0, 136.0, 47.0 ],
+									"style" : "",
+									"text" : "bitalino"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"background" : 1,
 									"fontface" : 3,
 									"fontsize" : 18.0,
 									"id" : "obj-55",
@@ -3691,15 +3776,14 @@
 , 							{
 								"box" : 								{
 									"background" : 1,
-									"fontface" : 3,
-									"fontsize" : 12.0,
-									"id" : "obj-19",
+									"id" : "obj-6",
+									"linecount" : 4,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 51.0, 455.0, 69.0, 20.0 ],
+									"patching_rect" : [ 609.5, 32.5, 294.0, 60.0 ],
 									"style" : "",
-									"text" : "limitation :"
+									"text" : "This object was developed by the ISMM team at IRCAM, within the context of the RAPID-MIX project, funded by the European Union’s Horizon 2020 research and innovation programme."
 								}
 
 							}
